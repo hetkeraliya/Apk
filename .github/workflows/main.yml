@@ -1,1 +1,53 @@
+name: Unpack Project ZIP
 
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Locate and Unpack ZIP
+        run: |
+          # Find any .zip file in the repository
+          ZIP_FILE=$(find . -maxdepth 2 -name "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "::error::No .zip file found in the repository. Please make sure the zip file is committed."
+            ls -la
+            exit 1
+          fi
+
+          echo "Found ZIP archive at: $ZIP_FILE"
+
+          # Extract into temporary folder to handle nested directories cleanly
+          mkdir -p temp_extracted
+          unzip -o "$ZIP_FILE" -d temp_extracted/
+
+          # If the zip extracted into an inner folder (e.g., temp_extracted/miband5-companion/*),
+          # move contents directly to the project root
+          if [ -d "temp_extracted/miband5-companion" ]; then
+            cp -rn temp_extracted/miband5-companion/* .
+            # Copy hidden dotfiles like .github if present
+            cp -rn temp_extracted/miband5-companion/.[!.]* . 2>/dev/null || true
+          else
+            cp -rn temp_extracted/* .
+          fi
+
+          # Clean up
+          rm -rf temp_extracted
+          rm -f "$ZIP_FILE"
+
+      - name: Commit & Push Extracted Files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-extracted project files" && git push)
+          
