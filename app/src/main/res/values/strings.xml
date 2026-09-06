@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Mi Band 5 Companion</string>
+    <string name="scan_devices">Scan &amp; Sync</string>
+    <string name="auth_key_hint">Auth key (32 hex chars) — from Zepp/Gadgetbridge/huami-token</string>
+    <string name="permission_ble_title">Bluetooth needed</string>
+    <string name="permission_ble_rationale">This app pairs directly with your Mi Band 5 over Bluetooth Low Energy. Your data never leaves the device.</string>
+    <string name="permission_location_title">Location (legacy devices)</string>
+    <string name="permission_location_rationale">On Android 11 and older, BLE scanning requires location permission. This app never uses your location.</string>
+    <string name="status_idle">Not connected</string>
+    <string name="status_scanning">Scanning…</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_authenticating">Authenticating…</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_error">Error</string>
+</resources>
